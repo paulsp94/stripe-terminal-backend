@@ -135,7 +135,7 @@ fastify.route({
   url: "/capture_payment_intent",
   schema: {
     body: {
-      id: { type: "string" },
+      payment_intent_id: { type: "string" },
     },
     response: {
       200: {
@@ -152,8 +152,10 @@ fastify.route({
     if (validationError) {
       reply.code(400).send(validationError);
     }
-    const { id } = request.body;
-    const paymentIntent = await stripe.paymentIntents.capture(id);
+    const { payment_intent_id } = request.body;
+    const paymentIntent = await stripe.paymentIntents.capture(
+      payment_intent_id
+    );
     console.info(`PaymentIntent successfully created: ${payment_intent.id}`);
     return { intent: paymentIntent.id, secret: paymentIntent.client_secret };
   },
