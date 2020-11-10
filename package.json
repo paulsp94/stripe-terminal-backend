@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "fastify": "^3.7.0",
+    "stripe": "^8.120.0"
+  }
+}
