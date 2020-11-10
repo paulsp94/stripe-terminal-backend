@@ -2,6 +2,11 @@
 
 This is a simple Fastify webapp that you can use to run the Stripe Terminal example apps. It is the [example-terminal-backend](https://github.com/stripe/example-terminal-backend) app from Stripe translated to node.
 
+1. [Run it on a free Heroku account](#running-on-heroku)
+2. [Run it locally on your machine](#running-locally-on-your-machine)
+
+ℹ️ You also need to obtain your Stripe **secret, test mode** API Key, available in the [Dashboard](https://dashboard.stripe.com/account/apikeys). Note that you must use your secret key, not your publishable key, to set up the backend. For more information on the differences between **secret** and publishable keys, see [API Keys](https://stripe.com/docs/keys). For more information on **test mode**, see [Test and live modes](https://stripe.com/docs/keys#test-live-modes).
+
 ## Running the app
 
 ### Running on Heroku
