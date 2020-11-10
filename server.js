@@ -84,7 +84,6 @@ fastify.route({
   },
   handler: async (request, reply) => {
     const validationError = validateApiKey();
-    console.log(validationError);
     if (validationError) {
       reply.code(400).send(validationError);
     }
@@ -154,7 +153,7 @@ fastify.route({
       reply.code(400).send(validationError);
     }
     const { id } = request.body;
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await stripe.paymentIntents.capture({
       id,
     });
     console.info(`PaymentIntent successfully created: ${payment_intent.id}`);
