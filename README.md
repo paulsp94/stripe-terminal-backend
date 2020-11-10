@@ -4,6 +4,7 @@ This is a simple Fastify webapp that you can use to run the Stripe Terminal exam
 
 1. [Run it on a free Heroku account](#running-on-heroku)
 2. [Run it locally on your machine](#running-locally-on-your-machine)
+3. [Run it locally via Docker CLI](#running-locally-with-docker)
 
 ℹ️ You also need to obtain your Stripe **secret, test mode** API Key, available in the [Dashboard](https://dashboard.stripe.com/account/apikeys). Note that you must use your secret key, not your publishable key, to set up the backend. For more information on the differences between **secret** and publishable keys, see [API Keys](https://stripe.com/docs/keys). For more information on **test mode**, see [Test and live modes](https://stripe.com/docs/keys#test-live-modes).
 
@@ -33,6 +34,16 @@ STRIPE_TEST_SECRET_KEY={YOUR_API_KEY}
 3. Run `yarn start` or `npm start`
 4. The example backend should now be running at `http://localhost:3000`
 5. Go to the [next steps](#next-steps) in this README for how to use this app
+
+### Running locally with Docker
+
+We have a pre-built Docker image you can run locally if you're into the convenience of containers.
+
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop) if you don't already have it. Then follow the steps below:
+
+1. In your terminal, run `docker run -e STRIPE_TEST_SECRET_KEY={YOUR_API_KEY} -p 3000:3000 pdonate/stripe-terminal-backend` (replace `{YOUR_API_KEY}` with your own test key)
+2. The example backend should now be running at `http://localhost:4567`
+3. Go to the [next steps](#next-steps) in this README for how to use this app
 
 ---
 
