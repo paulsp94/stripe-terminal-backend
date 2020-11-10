@@ -10,6 +10,15 @@ const apiKey =
 
 const stripe = require("stripe")(apiKey);
 
+fastify.addContentTypeParser(["application/x-www-form-urlencoded"], function (
+  request,
+  payload,
+  done
+) {
+  console.log(request);
+  done(new Error(), null);
+});
+
 const validateApiKey = () => {
   if (!apiKey) {
     return "Error: you provided an empty secret key. Please provide your test mode secret key. For more information, see https://stripe.com/docs/keys";
