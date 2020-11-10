@@ -179,7 +179,7 @@ fastify.route({
   url: "/attach_payment_method_to_customer",
   schema: {
     body: {
-      id: { type: "string" },
+      payment_method_id: { type: "string" },
     },
     response: {
       200: {
@@ -195,12 +195,14 @@ fastify.route({
     if (validationError) {
       reply.code(400).send(validationError);
     }
-    const { id } = request.body;
+    const { payment_method_id } = request.body;
     const customer = lookupOrCreateExampleCustomer();
-    console.log(customer);
-    const paymentIntent = await stripe.paymentIntents.attach(id, {
-      customer: customer.id,
-    });
+    const paymentIntent = await stripe.paymentIntents.attach(
+      payment_method_id,
+      {
+        customer: customer.id,
+      }
+    );
     console.info(`"Attached PaymentMethod to Customer: ${customer.id}`);
     return paymentIntent.toJSON();
   },
