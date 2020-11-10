@@ -197,7 +197,7 @@ fastify.route({
     }
     const { payment_method_id } = request.body;
     const customer = lookupOrCreateExampleCustomer();
-    const paymentIntent = await stripe.paymentIntents.attach(
+    const paymentIntent = await stripe.paymentMethods.attach(
       payment_method_id,
       {
         customer: customer.id,
