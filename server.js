@@ -154,7 +154,7 @@ fastify.route({
     if (validationError) {
       reply.code(400).send(validationError);
     }
-    console.log(req.body);
+    console.log(request.body);
     const { payment_intent_id } = request.body;
     const paymentIntent = await stripe.paymentIntents.capture(
       payment_intent_id
