@@ -165,11 +165,14 @@ fastify.route({
 // with email "example@test.com".
 const lookupOrCreateExampleCustomer = async () => {
   const customerEmail = "example@test.com";
-  customList = await stripe.customer.list({ email: customerEmail, limit: 1 });
+  customerList = await stripe.customers.list({
+    email: customerEmail,
+    limit: 1,
+  });
   if (customerList.length == 1) {
-    return customList[0];
+    return customerList[0];
   } else {
-    return await stripe.customer.create({ email: customerEmail });
+    return await stripe.customers.create({ email: customerEmail });
   }
 };
 
