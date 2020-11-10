@@ -11,7 +11,7 @@ const apiKey =
 const stripe = require("stripe")(apiKey);
 
 const validateApiKey = () => {
-  if (apiKey) {
+  if (!apiKey) {
     return "Error: you provided an empty secret key. Please provide your test mode secret key. For more information, see https://stripe.com/docs/keys";
   }
   if (apiKey.startsWith("pk")) {
@@ -58,7 +58,7 @@ fastify.route({
       reply.code(400).send(validationError);
     }
     const { registrationCode, label } = request.body;
-    const reader = stripe.terminal.readers.create({
+    const reader = await stripe.terminal.readers.create({
       registration_code: registrationCode,
       label: label,
     });
@@ -84,10 +84,11 @@ fastify.route({
   },
   handler: async (request, reply) => {
     const validationError = validateApiKey();
+    console.log(validationError);
     if (validationError) {
       reply.code(400).send(validationError);
     }
-    const token = stripe.terminal.connectionTokens.create();
+    const token = await stripe.terminal.connectionTokens.create();
     return { secret: token.secret };
   },
 });
@@ -117,7 +118,7 @@ fastify.route({
       reply.code(400).send(validationError);
     }
     const { amount, description } = request.body;
-    const paymentIntent = stripe.paymentIntents.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       payment_method_types: ["card_present"],
       capture_method: "manual",
       amount,
@@ -153,7 +154,7 @@ fastify.route({
       reply.code(400).send(validationError);
     }
     const { id } = request.body;
-    const paymentIntent = stripe.paymentIntents.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       id,
     });
     console.info(`PaymentIntent successfully created: ${payment_intent.id}`);
@@ -169,7 +170,7 @@ const lookupOrCreateExampleCustomer = async () => {
   if (customerList.length == 1) {
     return customList[0];
   } else {
-    return stripe.customer.create({ email: customerEmail });
+    return await stripe.customer.create({ email: customerEmail });
   }
 };
 
@@ -198,7 +199,7 @@ fastify.route({
     const { id } = request.body;
     const customer = lookupOrCreateExampleCustomer();
     console.log(customer);
-    const paymentIntent = stripe.paymentIntents.attach(id, {
+    const paymentIntent = await stripe.paymentIntents.attach(id, {
       customer: customer.id,
     });
     console.info(`"Attached PaymentMethod to Customer: ${customer.id}`);
