@@ -158,7 +158,7 @@ fastify.route({
     const paymentIntent = await stripe.paymentIntents.capture(
       payment_intent_id
     );
-    console.info(`PaymentIntent successfully created: ${payment_intend_id}`);
+    console.info(`PaymentIntent successfully created: ${payment_intent_id}`);
     return { intent: paymentIntent.id, secret: paymentIntent.client_secret };
   },
 });
