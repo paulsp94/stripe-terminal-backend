@@ -1,6 +1,6 @@
 # Stripe Terminal Backend
 
-This is a simple Fastify webapp that you can use to run the Stripe Terminal example apps. 
+This is a simple Fastify webapp that you can use to run the Stripe Terminal example apps. It is the [example-terminal-backend](https://github.com/stripe/example-terminal-backend) app from Stripe translated to node.
 
 ## Running the app
 
