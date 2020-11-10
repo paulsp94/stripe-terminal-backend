@@ -1,4 +1,6 @@
 const fastify = require("fastify")({ logger: true });
+fastify.register(require("fastify-formbody"));
+
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -9,15 +11,6 @@ const apiKey =
     : env["STRIPE_TEST_SECRET_KEY"];
 
 const stripe = require("stripe")(apiKey);
-
-fastify.addContentTypeParser(["application/x-www-form-urlencoded"], function (
-  request,
-  payload,
-  done
-) {
-  console.log(request);
-  done(new Error(), null);
-});
 
 const validateApiKey = () => {
   if (!apiKey) {
@@ -143,9 +136,9 @@ fastify.route({
   method: "POST",
   url: "/capture_payment_intent",
   schema: {
-    body: {
-      payment_intent_id: { type: "string" },
-    },
+    // body: {
+    //   payment_intent_id: { type: "string" },
+    // },
     response: {
       200: {
         type: "object",
@@ -161,6 +154,7 @@ fastify.route({
     if (validationError) {
       reply.code(400).send(validationError);
     }
+    console.log(req.body);
     const { payment_intent_id } = request.body;
     const paymentIntent = await stripe.paymentIntents.capture(
       payment_intent_id
