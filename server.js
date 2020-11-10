@@ -153,9 +153,7 @@ fastify.route({
       reply.code(400).send(validationError);
     }
     const { id } = request.body;
-    const paymentIntent = await stripe.paymentIntents.capture({
-      id,
-    });
+    const paymentIntent = await stripe.paymentIntents.capture(id);
     console.info(`PaymentIntent successfully created: ${payment_intent.id}`);
     return { intent: paymentIntent.id, secret: paymentIntent.client_secret };
   },
