@@ -197,8 +197,9 @@ fastify.route({
     }
     const { id } = request.body;
     const customer = lookupOrCreateExampleCustomer();
-    const paymentIntent = stripe.paymentIntents.attacb(id, {
-      customer.id,
+    console.log(customer);
+    const paymentIntent = stripe.paymentIntents.attach(id, {
+      customer: customer.id,
     });
     console.info(`"Attached PaymentMethod to Customer: ${customer.id}`);
     return paymentIntent.toJSON();
