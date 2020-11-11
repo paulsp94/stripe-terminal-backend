@@ -25,10 +25,16 @@ const validateApiKey = () => {
   return null;
 };
 
+fastify.addHook("preHandler", (request, reply, done) => {
+  const validationError = validateApiKey();
+  if (validationError) {
+    reply.code(400).send(validationError);
+  }
+  done();
+});
+
 // This endpoint registers a WisePay 3 reader to your Stripe account.
-fastify.route({
-  method: "POST",
-  url: "/register_readers",
+const registerReaderSchema = {
   schema: {
     body: {
       registrationCode: { type: "string" },
@@ -54,11 +60,11 @@ fastify.route({
       },
     },
   },
-  handler: async (request, reply) => {
-    const validationError = validateApiKey();
-    if (validationError) {
-      reply.code(400).send(validationError);
-    }
+};
+fastify.post(
+  "/register_readers",
+  registerReaderSchema,
+  async (request, reply) => {
     const { registrationCode, label } = request.body;
     const reader = await stripe.terminal.readers.create({
       registration_code: registrationCode,
@@ -66,14 +72,12 @@ fastify.route({
     });
     console.info(`Reader registered: ${reader.id}`);
     return reader.toJSON();
-  },
-});
+  }
+);
 
 //  This endpoint creates a ConnectionToken, which gives the SDK permission
 //  to use a reader with your Stripe account.
-fastify.route({
-  method: "POST",
-  url: "/connection_token",
+const connectionTokenSchema = {
   schema: {
     response: {
       200: {
@@ -84,20 +88,18 @@ fastify.route({
       },
     },
   },
-  handler: async (request, reply) => {
-    const validationError = validateApiKey();
-    if (validationError) {
-      reply.code(400).send(validationError);
-    }
+};
+fastify.post(
+  "/connection_token",
+  connectionTokenSchema,
+  async (request, reply) => {
     const token = await stripe.terminal.connectionTokens.create();
     return { secret: token.secret };
-  },
-});
+  }
+);
 
 // This endpoint creates a PaymentIntent.
-fastify.route({
-  method: "POST",
-  url: "/create_payment_intent",
+const createPaymentIntentSchema = {
   schema: {
     body: {
       amount: { type: "integer" },
@@ -113,11 +115,11 @@ fastify.route({
       },
     },
   },
-  handler: async (request, reply) => {
-    const validationError = validateApiKey();
-    if (validationError) {
-      reply.code(400).send(validationError);
-    }
+};
+fastify.post(
+  "/create_payment_intent",
+  createPaymentIntentSchema,
+  async (request, reply) => {
     const { amount, description } = request.body;
     const paymentIntent = await stripe.paymentIntents.create({
       payment_method_types: ["card_present"],
@@ -128,13 +130,11 @@ fastify.route({
     });
     console.info(`PaymentIntent successfully created: ${payment_intent.id}`);
     return { intent: paymentIntent.id, secret: paymentIntent.client_secret };
-  },
-});
+  }
+);
 
 // This endpoint captures a PaymentIntent.
-fastify.route({
-  method: "POST",
-  url: "/capture_payment_intent",
+const capturePaymentIntentSchema = {
   schema: {
     body: {
       payment_intent_id: { type: "string" },
@@ -149,19 +149,19 @@ fastify.route({
       },
     },
   },
-  handler: async (request, reply) => {
-    const validationError = validateApiKey();
-    if (validationError) {
-      reply.code(400).send(validationError);
-    }
+};
+fastify.post(
+  "/capture_payment_intent",
+  capturePaymentIntentSchema,
+  async (request, reply) => {
     const { payment_intent_id } = request.body;
     const paymentIntent = await stripe.paymentIntents.capture(
       payment_intent_id
     );
     console.info(`PaymentIntent successfully created: ${payment_intent_id}`);
     return { intent: paymentIntent.id, secret: paymentIntent.client_secret };
-  },
-});
+  }
+);
 
 // Looks up or creates a Customer on your stripe account
 // with email "example@test.com".
@@ -179,9 +179,7 @@ const lookupOrCreateExampleCustomer = async () => {
 };
 
 // This endpoint attaches a PaymentMethod to a Customer.
-fastify.route({
-  method: "POST",
-  url: "/attach_payment_method_to_customer",
+const attachPaymentMethodToCustomerSchema = {
   schema: {
     body: {
       payment_method_id: { type: "string" },
@@ -195,11 +193,11 @@ fastify.route({
       },
     },
   },
-  handler: async (request, reply) => {
-    const validationError = validateApiKey();
-    if (validationError) {
-      reply.code(400).send(validationError);
-    }
+};
+fastify.post(
+  "/attach_payment_method_to_customer",
+  attachPaymentMethodToCustomerSchema,
+  async (request, reply) => {
     const { payment_method_id } = request.body;
     const customer = lookupOrCreateExampleCustomer();
     const paymentIntent = await stripe.paymentMethods.attach(
@@ -210,8 +208,8 @@ fastify.route({
     );
     console.info(`"Attached PaymentMethod to Customer: ${customer.id}`);
     return paymentIntent.toJSON();
-  },
-});
+  }
+);
 
 const start = async () => {
   try {
