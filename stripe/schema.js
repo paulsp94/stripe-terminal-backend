@@ -1,4 +1,4 @@
-export const registerReaderSchema = {
+exports.registerReaderSchema = {
   schema: {
     body: {
       registrationCode: { type: "string" },
@@ -26,7 +26,7 @@ export const registerReaderSchema = {
   },
 };
 
-export const connectionTokenSchema = {
+exports.connectionTokenSchema = {
   schema: {
     response: {
       200: {
@@ -39,7 +39,7 @@ export const connectionTokenSchema = {
   },
 };
 
-export const createPaymentIntentSchema = {
+exports.createPaymentIntentSchema = {
   schema: {
     body: {
       amount: { type: "integer" },
@@ -57,7 +57,7 @@ export const createPaymentIntentSchema = {
   },
 };
 
-export const capturePaymentIntentSchema = {
+exports.capturePaymentIntentSchema = {
   schema: {
     body: {
       payment_intent_id: { type: "string" },
@@ -74,7 +74,7 @@ export const capturePaymentIntentSchema = {
   },
 };
 
-export const attachPaymentMethodToCustomerSchema = {
+exports.attachPaymentMethodToCustomerSchema = {
   schema: {
     body: {
       payment_method_id: { type: "string" },
